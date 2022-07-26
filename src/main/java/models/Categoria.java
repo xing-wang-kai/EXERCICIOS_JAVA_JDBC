@@ -5,6 +5,11 @@ import java.util.Locale;
 public class Categoria {
 	private int id;
 	private String nome;
+	
+	public Categoria(Integer id, String nome) {
+		this.setId(id);
+		this.setNome(nome);
+	}
 
 	public Integer getId() {
 		return this.id;

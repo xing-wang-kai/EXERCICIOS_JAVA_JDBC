@@ -19,8 +19,12 @@ public class Categorias {
 			}
 		});
 	}
-	public void listar() {
-		Categorias.categorias.stream().forEach(ct -> System.out.println(ct));
+	public ArrayList<Categoria> listar() {
+		ArrayList<Categoria> ctg = new ArrayList<>();
+		Categorias.categorias.stream().forEach(ct -> {
+			ctg.add(ct);
+		});
+		return ctg;
 	}
 	
 	public void listarPorId(Integer id) {
@@ -28,6 +32,19 @@ public class Categorias {
 			if(ct.getId()==id) {
 				System.out.println(ct);
 			}
+		});
+	}
+	public void listarCategoriasEProdutos() {
+		Categorias.categorias.stream().forEach(ct->{
+			System.out.println("Valor: " + ct);
+			ArrayList<Produto> ptd = new ArrayList<>();
+			for(Produto pdt: new Produtos().litar(ct)){
+				ptd.add(pdt);
+				System.out.println("produto add");
+			}
+			ptd.stream().forEach(p->{
+				System.out.println(p);
+			});
 		});
 	}
 }

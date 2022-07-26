@@ -20,4 +20,14 @@ public class Produtos {
 	public void litar(){
 		produtos.forEach(p -> System.out.println(p));
 	}
+	
+	public ArrayList<Produto> litar(Categoria ct) {
+		ArrayList<Produto> produtoCt = new ArrayList<>(); 
+		produtos.stream().forEach(pdt -> {
+			if(pdt.getCategoria() == ct.getId()) {
+				produtoCt.add(pdt);
+			}
+		});
+		return produtoCt;
+	}
 }
