@@ -14,7 +14,7 @@ public class ProdutosDao {
 	private Connection con;
 
 	public ProdutosDao() throws SQLException {
-		
+
 	}
 
 	public Connection getCon() {
@@ -27,13 +27,14 @@ public class ProdutosDao {
 
 	public void create(Produto produto) throws SQLException {
 		this.setCon(new ConnectionFactory().connect());
-		String query = "INSERT INTO produtos(nome, descricao, preco) values(?, ?, ?)";
+		String query = "INSERT INTO produtos(nome, descricao, preco, categoria_id) values(?, ?, ?, ?)";
 		this.con.setAutoCommit(false);
 		PreparedStatement stm = this.con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
 		stm.setString(1, produto.getNome());
 		stm.setString(2, produto.getDescricao());
 		stm.setBigDecimal(3, produto.getValor());
+		stm.setInt(4, produto.getCategoria());
 
 		stm.execute();
 
@@ -69,7 +70,7 @@ public class ProdutosDao {
 			this.con.close();
 
 		} catch (Exception e) {
-			System.out.println("OCORREU UM ERROR: " + e);
+			System.out.println("OCORREU UM ERROR UPDATE: " + e);
 		}
 	}
 
@@ -79,41 +80,60 @@ public class ProdutosDao {
 		this.con.setAutoCommit(false);
 		try (PreparedStatement stm = this.con.prepareStatement(query)) {
 			stm.execute();
-			
+
 			ResultSet rs = stm.getResultSet();
-			
-			while(rs.next()) {
-				Produto produto = new Produto(rs.getString("nome"), rs.getString("descricao"), rs.getBigDecimal("preco"));
+
+			while (rs.next()) {
+				Produto produto = new Produto(rs.getString("nome"), rs.getString("descricao"),
+						rs.getBigDecimal("preco"), rs.getInt("categoria_id"));
 				produto.setId(rs.getInt("id"));
 				Produtos produtos = new Produtos();
 				produtos.adicionar(produto);
-				System.out.println("Produto Adciionado com sucesso ID: " + produto.getId());
+				System.out.println("Produto Adcionado com sucesso ID: " + produto.getId());
 			}
-			
+
 			con.commit();
 			stm.close();
 			con.close();
 		} catch (Exception e) {
-			System.out.println("OCORREU UM ERROR: " + e);
+			System.out.println("OCORREU UM ERROR LISTAR: " + e);
 		}
 
 	}
-	public void remover(Integer id) throws SQLException{
+
+	public void remover(Integer id) throws SQLException {
 		this.setCon(new ConnectionFactory().connect());
-		String query = "DELETE FROM produtos Where (id = ?);";
-		try(PreparedStatement stm = this.con.prepareStatement(query)){
-			
+		String query = "DELETE FROM produtos Where (id = ?)";
+		try (PreparedStatement stm = this.con.prepareStatement(query)) {
+
 			stm.setInt(1, id);
 			stm.execute();
 			int rs = stm.getUpdateCount();
-			
+
 			System.out.println("TOTAL DELETADOS: " + rs);
-			
+
 			new Produtos().remover(id);
 
 			con.close();
-		}catch(Exception e) {
-			System.out.println("OCOREEU UM ERROR: " + e.getStackTrace());
+		} catch (Exception e) {
+			System.out.println("OCOREEU UM ERROR DELETADOS: " + e.getStackTrace());
 		}
+	}
+
+	public void findById(int id) {
+		try (Connection con = new ConnectionFactory().connect()) {
+			String query = "SELECT * FROM produtos WHERE(id=?)";
+			try (PreparedStatement stm = con.prepareStatement(query)) {
+				stm.setInt(1, id);
+				stm.execute();
+				ResultSet rs = stm.getResultSet();
+				while (rs.next()) {
+					System.out.println(rs.getInt("id") + " " + rs.getString("nome"));
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("OCORREU UM ERROR: " + e.getLocalizedMessage());
+		}
+
 	}
 }

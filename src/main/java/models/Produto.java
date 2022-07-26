@@ -8,11 +8,13 @@ public class Produto {
 	private String nome;
 	private BigDecimal valor;
 	private String descricao;
+	private Integer categoria;
 	
-	public Produto(String nome, String descricao, BigDecimal valor) {
+	public Produto(String nome, String descricao, BigDecimal valor, int categoria) {
 		this.setNome(nome);
 		this.setValor(valor);
 		this.setDescricao(descricao);
+		this.setCategoria(categoria);
 		System.out.println("novo objecto criado com suscesso");
 	}
 	public Integer getId() {
@@ -45,5 +47,11 @@ public class Produto {
 	}
 	public BigDecimal getValor() {
 		return this.valor;
+	}
+	public int getCategoria() {
+		return this.categoria;
+	}
+	public void setCategoria(Integer valor) {
+		this.categoria = valor;
 	}
 }
