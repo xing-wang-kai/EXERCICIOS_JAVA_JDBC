@@ -6,16 +6,29 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
+
 public class ConnectionFactory {
 
 	public Connection com;
+	public DataSource datasource;
 
 	public ConnectionFactory() throws SQLException {
 		this.connect();
+		ComboPooledDataSource cpds = new ComboPooledDataSource();
+		cpds.setJdbcUrl("jdbc:mysql://localhost:3308/loja");
+		cpds.setUser("root");
+		cpds.setPassword("hoot");
+		cpds.setMaxPoolSize(15);
+		
+		this.datasource = cpds;
 	}
 
 	public Connection connect() throws SQLException {
-		this.com = DriverManager.getConnection("jdbc:mysql://localhost:3308/loja", "root", "hoot");
+		this.datasource.getConnection();
+		this.com = DriverManager.getConnection("jdbc:mysql://localhost:3308/loja?useTimeZone=true&serverTimeZone=UTC", "root", "hoot");
 		return com;
 	}
 
